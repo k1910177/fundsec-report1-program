@@ -1,18 +1,20 @@
 package ttable
 
+import "encoding/binary"
+
 // Encrypts a 16-bytes block src using AES encryption with
 // extended key xk and for nr rounds.
-// It returns the encrypted block.
+// It returns the encrypted block.w
 func Encrypt(src, key []byte, nr int) []byte {
 	var tmp0, tmp1, tmp2, tmp3 uint32
 
 	xk := KeyExpansion(key, nr)
 
 	// Initialize the state, stored in s0, s1, s2 and s3
-	s0 := uint32(src[0])<<24 | uint32(src[1])<<16 | uint32(src[2])<<8 | uint32(src[3])
-	s1 := uint32(src[4])<<24 | uint32(src[5])<<16 | uint32(src[6])<<8 | uint32(src[7])
-	s2 := uint32(src[8])<<24 | uint32(src[9])<<16 | uint32(src[10])<<8 | uint32(src[11])
-	s3 := uint32(src[12])<<24 | uint32(src[13])<<16 | uint32(src[14])<<8 | uint32(src[15])
+	s0 := binary.BigEndian.Uint32(src[0:4])
+	s1 := binary.BigEndian.Uint32(src[4:8])
+	s2 := binary.BigEndian.Uint32(src[8:12])
+	s3 := binary.BigEndian.Uint32(src[12:16])
 
 	// Add the first round key to the state
 	s0 ^= xk[0]
@@ -40,10 +42,10 @@ func Encrypt(src, key []byte, nr int) []byte {
 	// Unpack the state into the destination block. For performance purpose dst could be passed to the function
 	// rather than being allocated each time.
 	dst := make([]byte, 16)
-	dst[0], dst[1], dst[2], dst[3] = byte(s0>>24), byte(s0>>16), byte(s0>>8), byte(s0)
-	dst[4], dst[5], dst[6], dst[7] = byte(s1>>24), byte(s1>>16), byte(s1>>8), byte(s1)
-	dst[8], dst[9], dst[10], dst[11] = byte(s2>>24), byte(s2>>16), byte(s2>>8), byte(s2)
-	dst[12], dst[13], dst[14], dst[15] = byte(s3>>24), byte(s3>>16), byte(s3>>8), byte(s3)
+	binary.BigEndian.PutUint32(dst[0:4], s0)
+	binary.BigEndian.PutUint32(dst[4:8], s1)
+	binary.BigEndian.PutUint32(dst[8:12], s2)
+	binary.BigEndian.PutUint32(dst[12:16], s3)
 
 	return dst
 }

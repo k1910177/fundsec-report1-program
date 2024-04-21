@@ -34,3 +34,8 @@ go test -bench=BenchmarkAES128SBox . -memprofile mem.out -o pprof.bin
 go tool pprof -http=":8888" mem.out
 ```
 
+Benchmark all
+
+```sh
+./benchmark.sh
+```

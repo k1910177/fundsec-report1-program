@@ -24,5 +24,13 @@ Open workspace in devcontainer and wait for it to boot up
 Run benchmark in integrated terminal
 
 ```sh
-go test -bench . -benchmem
+go test -bench . -benchmem -benchtime=1000000x -cpu=1
 ```
+
+Create memory profile and view in the browser
+
+```sh
+go test -bench=BenchmarkAES128SBox . -memprofile mem.out -o pprof.bin
+go tool pprof -http=":8888" mem.out
+```
+

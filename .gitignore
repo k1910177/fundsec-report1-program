@@ -1,3 +1,7 @@
 z/
 bin/
 .DS_Store
+*.out
+*.bin
+*.png
+*.svg
